@@ -5,7 +5,7 @@ import akka.testkit.{ImplicitSender, TestKit}
 import com.typesafe.config.Config
 import org.scalatest.{BeforeAndAfterAll, FlatSpecLike, Matchers}
 
-abstract class TestCaseRunner(name: String, receptionistProps: Props, config: Config) extends TestKit(ActorSystem("simple-actors", config)) with ImplicitSender with FlatSpecLike with Matchers with TestConfig with BeforeAndAfterAll {
+abstract class TestCaseRunner(name: String, receptionistProps: Props, config: Config) extends TestKit(ActorSystem(name, config)) with ImplicitSender with FlatSpecLike with Matchers with TestConfig with BeforeAndAfterAll {
 
   val receptionist = system.actorOf(receptionistProps, "receptionist")
 
