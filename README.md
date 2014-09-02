@@ -1,4 +1,4 @@
-# Akka presentation: Typed Channels and FSM
+# Akka presentation: Akka with FSM
 
 
 ## Slides

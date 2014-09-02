@@ -1,6 +1,6 @@
 
 
-name := "AkkaTypedChannelAndFsm"
+name := "AkkaWithFsm"
 
 version := "1.0"
 
