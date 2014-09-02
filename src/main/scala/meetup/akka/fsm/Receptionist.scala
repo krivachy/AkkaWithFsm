@@ -2,7 +2,7 @@ package meetup.akka.fsm
 
 import akka.actor._
 import meetup.akka.Api
-import meetup.akka.fsm.Receptionist.Internal.{NoData, Processing, Queue, Sleeping}
+import meetup.akka.fsm.Receptionist.Internal.{NoQueue, Processing, Queue, Sleeping}
 import meetup.akka.fsm.Receptionist._
 
 object Receptionist {
@@ -14,15 +14,11 @@ object Receptionist {
   object Internal {
 
     sealed trait State
-
     case object Sleeping extends State
-
     case object Processing extends State
 
     sealed trait Data
-
-    case class NoData(requestId: Int = 0) extends Data
-
+    case class NoQueue(requestId: Int = 0) extends Data
     case class Queue(currentRequestId: Int, items: Vector[Job]) extends Data
 
   }
@@ -31,7 +27,7 @@ object Receptionist {
 
 class Receptionist extends LoggingFSM[Internal.State, Internal.Data] with LogEntriesToStringSupport[Internal.State, Internal.Data] {
 
-  startWith(Sleeping, NoData())
+  startWith(Sleeping, NoQueue())
 
   when(Sleeping)(enqueueNewRequest)
 
@@ -42,7 +38,7 @@ class Receptionist extends LoggingFSM[Internal.State, Internal.Data] with LogEnt
   override def logDepth = 8
 
   def enqueueNewRequest: StateFunction = {
-    case Event(Api.Scrape(url, depth), NoData(requestId)) =>
+    case Event(Api.Scrape(url, depth), NoQueue(requestId)) =>
       startControllerFor(requestId + 1, Vector(Job(sender(), url, depth)))
     case Event(Api.Scrape(url, depth), queue: Queue) =>
       if (queue.items.size > 3) {
@@ -69,7 +65,7 @@ class Receptionist extends LoggingFSM[Internal.State, Internal.Data] with LogEnt
   private def nextQueueItem(queue: Queue): State = {
     val remainingItems = queue.items.tail
     if (remainingItems.isEmpty) {
-      goto(Sleeping) using NoData(queue.currentRequestId)
+      goto(Sleeping) using NoQueue(queue.currentRequestId)
     } else {
       startControllerFor(queue.currentRequestId + 1, remainingItems)
     }
