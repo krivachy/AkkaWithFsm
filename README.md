@@ -4,6 +4,7 @@
 ## Slides
 
 ## Actor example used
+![Actor Example](etc/img/ActorExample.png)
 
 ## FSM
 
