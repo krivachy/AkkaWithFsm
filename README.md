@@ -2,6 +2,7 @@
 
 
 ## Slides
+[Slides on Slideshare](http://www.slideshare.net/krivachy/the-dark-side-of-akka-redacted)
 
 ## Actor example used
 ![Actor Example](etc/img/ActorExample.png)
